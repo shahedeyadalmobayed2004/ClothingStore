@@ -31,48 +31,48 @@ options: >-
   --health-retries=3
 
 steps:
-- name: Checkout code
-  uses: actions/checkout@v3
-- name: Setup PHP 8.2
-  uses: shivammathur/setup-php@v2
- with:
-  php-version: '8.2'
-  extensions: mbstring, pdo, pdo_mysql, redis, bcmath, xml, curl
-  coverage: xdebug
+  - name: Checkout code
+    uses: actions/checkout@v3
+  - name: Setup PHP 8.2
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: '8.2'
+      extensions: mbstring, pdo, pdo_mysql, redis, bcmath, xml, curl
+      coverage: xdebug
 
-- name: Copy .env
-  run: cp .env.example .env
+  - name: Copy .env
+    run: cp .env.example .env
 
-- name: Install Composer dependencies
-  run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+  - name: Install Composer dependencies
+    run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
-- name: Generate key
-  run: php artisan key:generate
+  - name: Generate key
+    run: php artisan key:generate
 
-- name: Set permissions
-  run: chmod -R 777 storage bootstrap/cache
+  - name: Set permissions
+    run: chmod -R 777 storage bootstrap/cache
 
-- name: Clear config cache
-  run: php artisan config:clear
-  
-- name: Run migrations
-env:
-DB_CONNECTION: mysql
-DB_HOST: 127.0.0.1
-DB_PORT: 3306
-DB_DATABASE: blog_test
-DB_USERNAME: root
-DB_PASSWORD: password
-REDIS_HOST: 127.0.0.1
-REDIS_PORT: 6379
-run: php artisan migrate --force
-- name: Seed database
-env:
-DB_CONNECTION: mysql
-DB_HOST: 127.0.0.1
-DB_DATABASE: blog_test
-DB_USERNAME: root
-DB_PASSWORD: password
+  - name: Clear config cache
+    run: php artisan config:clear
+
+  - name: Run migrations
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: blog_test
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+    run: php artisan migrate --force
+  - name: Seed database
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: blog_test
+      DB_USERNAME: root
+      DB_PASSWORD: password
 
 
 run: php artisan db:seed
