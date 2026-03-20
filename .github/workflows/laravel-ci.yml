@@ -110,9 +110,9 @@ steps:
   - name: Run PHPStan
     run: vendor/bin/phpstan analyse --memory-limit=2G
 
-- name: Upload coverage to Codecov
-  uses: codecov/codecov-action@v3
-  with:
-    files: ./coverage.xml
-    flags: unittests
-    name: laravel-blog-coverage
+  - name: Upload coverage to Codecov
+    uses: codecov/codecov-action@v3
+    with:
+      files: ./coverage.xml
+      flags: unittests
+      name: laravel-blog-coverage
