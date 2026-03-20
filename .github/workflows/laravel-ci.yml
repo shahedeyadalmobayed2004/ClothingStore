@@ -35,23 +35,26 @@ steps:
   uses: actions/checkout@v3
 - name: Setup PHP 8.2
   uses: shivammathur/setup-php@v2
-with:
-php-version: '8.2'
-extensions: mbstring, pdo, pdo_mysql, redis, bcmath, xml, curl
-coverage: xdebug
-
+ with:
+  php-version: '8.2'
+  extensions: mbstring, pdo, pdo_mysql, redis, bcmath, xml, curl
+  coverage: xdebug
 
 - name: Copy .env
-run: cp .env.example .env
+  run: cp .env.example .env
+
 - name: Install Composer dependencies
-run: composer install --prefer-dist --no-progress --no-interaction --opti
-mize-autoloader
+  run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
 - name: Generate key
-run: php artisan key:generate
+  run: php artisan key:generate
+
 - name: Set permissions
-run: chmod -R 777 storage bootstrap/cache
+  run: chmod -R 777 storage bootstrap/cache
+
 - name: Clear config cache
-run: php artisan config:clear
+  run: php artisan config:clear
+  
 - name: Run migrations
 env:
 DB_CONNECTION: mysql
