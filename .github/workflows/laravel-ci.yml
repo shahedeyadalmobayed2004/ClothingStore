@@ -94,6 +94,8 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
         run: |
+          composer require --dev laravel/dusk
+          php artisan dusk:install
           php artisan serve &
           php artisan dusk
 
