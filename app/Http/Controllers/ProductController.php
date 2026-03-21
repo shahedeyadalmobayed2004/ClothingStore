@@ -5,28 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Category;
+
 class ProductController extends Controller
 {
       /**
      * Display a listing of the resource.
      */
-  public function index()
-{
-    $query = Product::with('category');
+    public function index()
+    {
+        $query = Product::with('category');
 
-    if (request()->filled('search')) {
-        $query->where('name', 'like', '%' . request('search') . '%');
+        if (request()->filled('search')) {
+            $query->where('name', 'like', '%' . request('search') . '%');
+        }
+
+        if (request()->filled('category_id')) {
+            $query->where('category_id', request('category_id'));
+        }
+
+        $products = $query->latest()->paginate(6);
+        $categories = Category::all();
+
+        return view('products.index', compact('products', 'categories'));
     }
-
-    if (request()->filled('category_id')) {
-        $query->where('category_id', request('category_id'));
-    }
-
-    $products = $query->latest()->paginate(6);
-    $categories = Category::all();
-
-    return view('products.index', compact('products', 'categories'));
-}
 
 
     /**
@@ -41,26 +42,26 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
-{
-    $request->validate([
+    public function store(Request $request)
+    {
+        $request->validate([
         'name' => 'required',
         'description' => 'required',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-    ], [
+        ], [
         'name.required' => 'اسم المنتج مطلوب',
         'description.required' => 'الوصف مطلوب',
         'price.required' => 'السعر مطلوب',
         'price.numeric' => 'السعر يجب أن يكون رقمًا',
         'category_id.required' => 'يجب اختيار الفئة',
         'category_id.exists' => 'الفئة المختارة غير موجودة',
-    ]);
+        ]);
 
-    Product::create($request->all());
+        Product::create($request->all());
 
-    return redirect()->route('products.index')->with('success', 'تم إضافة المنتج بنجاح!');
-}
+        return redirect()->route('products.index')->with('success', 'تم إضافة المنتج بنجاح!');
+    }
 
     /**
      * Display the specified resource.
@@ -82,26 +83,26 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, Product $product)
-{
-    $request->validate([
+    public function update(Request $request, Product $product)
+    {
+        $request->validate([
         'name' => 'required',
         'description' => 'required',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-    ], [
+        ], [
         'name.required' => 'اسم المنتج مطلوب',
         'description.required' => 'الوصف مطلوب',
         'price.required' => 'السعر مطلوب',
         'price.numeric' => 'السعر يجب أن يكون رقمًا',
         'category_id.required' => 'يجب اختيار الفئة',
         'category_id.exists' => 'الفئة المختارة غير موجودة',
-    ]);
+        ]);
 
-    $product->update($request->all());
+        $product->update($request->all());
 
-    return redirect()->route('products.index')->with('success', 'تم تحديث المنتج بنجاح!');
-}
+        return redirect()->route('products.index')->with('success', 'تم تحديث المنتج بنجاح!');
+    }
 
 
     /**
